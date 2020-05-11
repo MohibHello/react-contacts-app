@@ -15,61 +15,38 @@ import {
 const AuthState = (props) => {
   const initialState = {
    token:localStorage.getItem('token'),
-   isAuthenticated:null;
+   isAuthenticated:null,
    loading:true,
+   user:null,
+   error:null
   };
 
-  const [state, dispatch] = useReducer(ContactReducer, initialState);
+  const [state, dispatch] = useReducer(AuthReducer, initialState);
 
-  //Add Contact
-  const addContact = (contact) => {
-    contact.id = uuidv4();
-    dispatch({ type: ADD_CONTACT, payload: contact });
-  };
+ // Load User
 
-  //Delete Contact
-  const deleteContact = (id) => {
-    dispatch({ type: DELETE_CONTACT, payload: id });
-  };
-  //Set Current Contact
-  const setCurrent = (contact) => {
-    dispatch({ type: SET_CURRENT, payload: contact });
-  };
-  //Clear Current Contact
-  const clearCurrent = (contact) => {
-    dispatch({ type: CLEAR_CURRENT });
-  };
-  //Update Contact
-  const updateContact = (contact) => {
-    dispatch({ type: UPDATE_CONTACT, payload: contact });
-  };
-  //Filter Contact
-  const filterContacts = (text) => {
-    dispatch({ type: FILTER_CONTACTS, payload: text });
-  };
-  //Clear Contact
-  const clearFilter = (contact) => {
-    dispatch({ type: CLEAR_FILTER });
-  };
+ // Register User
+
+ //Login User
+
+ //Logout
+
+ //Clear Errors
+
+
 
   return (
-    <contactContext.Provider
+    <AuthContext.Provider
       value={{
-        contacts: state.contacts,
-        current: state.current,
-        filtered:state.filtered,
-        addContact,
-        deleteContact,
-        setCurrent,
-        clearCurrent,
-        updateContact,
-        filterContacts,
-        clearFilter
-
+       token:state.token,
+       loading:state.loading,
+       isAuthenticated:state.isAuthenticated,
+       user:state.user,
+       error:state.error,
       }}
     >
       {props.children}
-    </contactContext.Provider>
+    </AuthContext.Provider>
   );
 };
 
