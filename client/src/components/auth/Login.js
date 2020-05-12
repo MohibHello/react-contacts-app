@@ -1,6 +1,26 @@
-import React, { useState } from 'react'
+import React, { useState,useContext,useEffect } from 'react'
+import AlertContext from '../../context/alert/AlertContext';
+import AuthContext from '../../context/auth/AuthContext';
 
-const Login = () => {
+const Login = (props) => {
+    const alertContext = useContext(AlertContext);
+    const authContext = useContext(AuthContext);
+
+
+    const {setAlert} = alertContext;
+
+    const {login,error,clearErrors,isAuthenticated} = authContext;
+
+    useEffect(() => {
+        if(isAuthenticated){
+            props.history.push('/');
+        }
+      if(error ==='Invalid Credentials'){
+          setAlert(error,'danger');
+          clearErrors();
+      }
+      //eslint-disable-next-line
+    }, [error,isAuthenticated,props.history])
 
     const [user,setUser] = useState({
         email:'',
@@ -14,8 +34,15 @@ const Login = () => {
     }
 
     const onSubmit = e =>{
-        e.preventDeffault();
-        console.log('Register submit')
+        e.preventDefault();
+        if(email ==='' || password ===''){
+            setAlert('Please fill in all filed','danger')
+        } else{
+            login({
+                email,
+                password
+            });
+        }
     }
 
     return (
@@ -23,14 +50,14 @@ const Login = () => {
             <h1>
                 Account <span class="text-primary">Login</span>
             </h1>
-            <form >
+            <form onSubmit={onSubmit}>
                 <div className='form-group'>
                     <label htmlFor="email">Email Address</label>
-                    <input type="email" name="email" value={email} onChange={onChange} />
+                    <input type="email" name="email" value={email} onChange={onChange} required/>
                 </div>
                 <div className='form-group'>
                     <label htmlFor="password">Password</label>
-                    <input type="text" name="password" value={password} onChange={onChange} />
+                    <input type="password" name="password" value={password} onChange={onChange} required/>
                 </div>
                 <input type="submit" value="Login" className='btn btn-primary btn-block'/>
             </form>
