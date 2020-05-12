@@ -7,10 +7,19 @@ import {
   FILTER_CONTACTS,
   CLEAR_FILTER,
   CONTACT_ERROR,
+  GET_CONTACTS,
+  CLEAR_CONTACTS,
 } from "../types";
 
 export default (state, action) => {
   switch (action.type) {
+    case GET_CONTACTS:
+      return{
+        ...state,
+        contacts:action.payload,
+        loading:false
+      }
+
     case ADD_CONTACT:
       return { ...state, contacts: [...state.contacts, action.payload] };
     case DELETE_CONTACT:
@@ -18,8 +27,17 @@ export default (state, action) => {
         ...state,
         contacts: state.contacts.filter(
           (contact) => contact.id !== action.payload
-        ),
+        ),loading:false
       };
+    case CLEAR_CONTACTS:
+      return {
+        ...state,
+        contacts:null,
+        filtered:null,
+        error:null,
+        current:null
+      }
+
     case SET_CURRENT:
       return { ...state, current: action.payload };
     case CLEAR_CURRENT:
@@ -29,7 +47,7 @@ export default (state, action) => {
         ...state,
         contacts: state.contacts.map((contact) =>
           contact.id === action.payload.id ? action.payload : contact
-        ),
+        ),loading:false
       };
     case FILTER_CONTACTS:
       return {

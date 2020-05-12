@@ -1,20 +1,37 @@
-import React, { useContext, Fragment } from "react";
+import React, { useContext, Fragment, useEffect } from "react";
 import ContactContext from "../../context/contact/ContactContext";
 import ContactsItem from "./ContactsItem";
 import {TransitionGroup, CSSTransition } from "react-transition-group";
+import { css } from "@emotion/core";
+import ClipLoader from "react-spinners/ClipLoader";
 
 const Contacts = () => {
   const contactContext = useContext(ContactContext);
 
-  const { contacts, filtered } = contactContext;
+  const { contacts, filtered,getContacts,loading } = contactContext;
 
-  if (contacts.length === 0) {
+
+  // Can be a string as well. Need to ensure each key-value pair ends with ;
+const override = css`
+display: block;
+margin: 0 auto;
+border-color: red;
+`;
+
+
+  useEffect(() => {
+   getContacts();
+   //eslint-disable-next-line
+  }, [])
+
+
+  if (contacts !== null && contacts.length === 0 && !loading) {
     return <h4>Please add a contact</h4>;
   }
 
   return (
     <Fragment>
-      <TransitionGroup>
+      {contacts !== null && !loading ?(<TransitionGroup>
         {filtered !== null
           ? filtered.map((contact) => (
               <CSSTransition key={contact._id} timeout={500} classNames="item">
@@ -26,7 +43,11 @@ const Contacts = () => {
               <ContactsItem  contact={contact} />
               </CSSTransition>
             ))}
-      </TransitionGroup>
+      </TransitionGroup>):<ClipLoader 
+          color={"#123abc"}
+          css={override}
+          loading={true}/>}
+      
     </Fragment>
   );
 };
